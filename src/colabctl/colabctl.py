@@ -21,15 +21,17 @@ sys.path.insert(0,'/usr/lib/chromium-browser/chromedriver')
 # Toggle debug mode
 DEBUG = False
 
+# Parse Arguments
 fork = sys.argv[1]
 timeout = int(sys.argv[2])
-colab_urls = file_to_list('notebooks.csv')
 
-if len(colab_urls) > 0 and validators.url(colab_urls[0]):
-    colab_1 = colab_urls[0]
-else:
+# Load Colab URLs
+COLAB_URLS = file_to_list('notebooks.csv')
+if not COLAB_URLS or not validators.url(COLAB_URLS[0]):
     raise Exception('No notebooks')
+COLAB_MAIN_URL = COLAB_URLS[0]
 
+# Setup Selenium Webdriver
 chrome_options = Options()
 chrome_options.add_argument('--headless')
 chrome_options.add_argument('--no-sandbox')
@@ -39,12 +41,13 @@ if DEBUG:
 
 wd = webdriver.Chrome('chromedriver', options=chrome_options)
 
-wd.get(colab_1)
+wd.get(COLAB_MAIN_URL)
 try:
     for cookie in pickle.load(open("gCookies.pkl", "rb")):
         wd.add_cookie(cookie)
 except Exception:
     pass
+wd.get(COLAB_MAIN_URL)
 
 TOP_LEVEL_FILE_MENU = '//*[@id="file-menu-button"]/div/div/div[1]'
 OK_BUTTON  = '//*[@id="ok"]'
@@ -68,7 +71,7 @@ if exists_by_text(wd, "Sign in"):
     wd.quit()
     wd = webdriver.Chrome('chromedriver', options=chrome_options)
 while True:
-    for colab_url in colab_urls:
+    for colab_url in COLAB_URLS:
         complete = False
         wd.get(colab_url)
         print("Logged in.") # for debugging
