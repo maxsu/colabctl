@@ -135,7 +135,10 @@ try:
         wd.add_cookie(cookie)
 except Exception:
     pass
-wd.get(colab_1)
+
+TOP_LEVEL_FILE_MENU = '//*[@id="file-menu-button"]/div/div/div[1]'
+OK_BUTTON  = '//*[@id="ok"]'
+LOGIN_DETECTION_MAGIC = '//*[@id="yDmH0d"]/c-wiz/div/div[2]/c-wiz/c-wiz/div/div[4]/div/div/header/div[2]'
 
 if exists_by_text(wd, "Sign in"):
     print("No auth cookie detected. Please login to Google.")
@@ -147,7 +150,7 @@ if exists_by_text(wd, "Sign in"):
     chrome_options_gui.add_argument('--disable-infobars')
     wd = webdriver.Chrome('chromedriver', options=chrome_options_gui)
     wd.get("https://accounts.google.com/signin")
-    wait_for_xpath(wd, '//*[@id="yDmH0d"]/c-wiz/div/div[2]/c-wiz/c-wiz/div/div[4]/div/div/header/div[2]')
+    wait_for_xpath(wd, LOGIN_DETECTION_MAGIC)
     print("Login detected. Saving cookie & restarting connection.")
     pickle.dump(wd.get_cookies(), open("gCookies.pkl", "wb"))
     wd.close()
@@ -159,25 +162,25 @@ while True:
         wd.get(colab_url)
         print("Logged in.") # for debugging
         running = False
-        wait_for_xpath(wd, '//*[@id="file-menu-button"]/div/div/div[1]')
+        wait_for_xpath(wd, TOP_LEVEL_FILE_MENU)
         print('Notebook loaded.')
         sleep(10)
 
         while not exists_by_text(wd, "Sign in"):
             if exists_by_text(wd, "Runtime disconnected"):
                 try:
-                    wd.find_element_by_xpath('//*[@id="ok"]').click()
+                    wd.find_element_by_xpath(OK_BUTTON).click()
                 except NoSuchElementException:
                     pass
             if exists_by_text2(wd, "Notebook loading error"):
                 wd.get(colab_url)
             try:
-                wd.find_element_by_xpath('//*[@id="file-menu-button"]/div/div/div[1]')
+                wd.find_element_by_xpath(TOP_LEVEL_FILE_MENU)
                 if not running:
                     wd.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.SHIFT + "q")
                     wd.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.SHIFT + "k")
-                    exists_by_xpath(wd, '//*[@id="ok"]', 10)
-                    wd.find_element_by_xpath('//*[@id="ok"]').click()
+                    exists_by_xpath(wd, OK_BUTTON, 10)
+                    wd.find_element_by_xpath(OK_BUTTON).click()
                     sleep(10)
                     wd.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.F9)
                     running = True
