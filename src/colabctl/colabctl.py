@@ -18,6 +18,8 @@ from driver_commands import wait_for_xpath, scroll_to_bottom
 # Provide execution path to chromedriver
 sys.path.insert(0,'/usr/lib/chromium-browser/chromedriver')
 
+# Toggle debug mode
+DEBUG = False
 
 fork = sys.argv[1]
 timeout = int(sys.argv[2])
@@ -29,10 +31,12 @@ else:
     raise Exception('No notebooks')
 
 chrome_options = Options()
-chrome_options.add_argument('--headless') # uncomment for headless mode
+chrome_options.add_argument('--headless')
 chrome_options.add_argument('--no-sandbox')
-#chrome_options.add_argument("user-data-dir=profile") # left for debugging
 chrome_options.add_argument('--disable-dev-shm-usage')
+if DEBUG:
+    chrome_options.add_argument("user-data-dir=profile")
+
 wd = webdriver.Chrome('chromedriver', options=chrome_options)
 
 wd.get(colab_1)
@@ -52,7 +56,8 @@ if exists_by_text(wd, "Sign in"):
     wd.quit()
     chrome_options_gui = Options()
     chrome_options_gui.add_argument('--no-sandbox')
-    #chrome_options.add_argument("user-data-dir=profile") # left for debugging
+    if DEBUG:
+        chrome_options_gui.add_argument("user-data-dir=profile")
     chrome_options_gui.add_argument('--disable-infobars')
     wd = webdriver.Chrome('chromedriver', options=chrome_options_gui)
     wd.get("https://accounts.google.com/signin")
