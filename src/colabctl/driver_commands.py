@@ -43,3 +43,8 @@ def new_tab(driver, url, tab_index):
         return False
     switch_to_tab(driver, tab_index)
     return True
+
+def kill_driver(driver):
+    driver.close()
+    driver.quit()
+

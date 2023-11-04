@@ -10,7 +10,7 @@ import validators
 
 from utils import sleep, file_to_list
 from driver_queries import exists_by_text2, exists_by_xpath, exists_by_text
-from driver_commands import wait_for_xpath, scroll_to_bottom
+from driver_commands import wait_for_xpath, scroll_to_bottom, kill_driver
 
 # Provide execution path to chromedriver
 sys.path.insert(0,'/usr/lib/chromium-browser/chromedriver')
@@ -52,8 +52,7 @@ LOGIN_DETECTION_MAGIC = '//*[@id="yDmH0d"]/c-wiz/div/div[2]/c-wiz/c-wiz/div/div[
 
 if exists_by_text(wd, "Sign in"):
     print("No auth cookie detected. Please login to Google.")
-    wd.close()
-    wd.quit()
+    kill_driver(wd)
     chrome_options_gui = Options()
     chrome_options_gui.add_argument('--no-sandbox')
     if DEBUG:
@@ -64,8 +63,7 @@ if exists_by_text(wd, "Sign in"):
     wait_for_xpath(wd, LOGIN_DETECTION_MAGIC)
     print("Login detected. Saving cookie & restarting connection.")
     pickle.dump(wd.get_cookies(), open("gCookies.pkl", "wb"))
-    wd.close()
-    wd.quit()
+    kill_driver(wd)
     wd = webdriver.Chrome('chromedriver', options=chrome_options)
 while True:
     for colab_url in COLAB_URLS:
