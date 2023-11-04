@@ -31,7 +31,7 @@ def exists_by_text2(driver, text):
 
 def exists_by_xpath(driver, thex, howlong):
     try:
-        WebDriverWait(driver, howlong).until(ec.visibility_of_element_located((By.XPATH, thex)))
+        WebDriverWait(driver, howlong).until(EC.visibility_of_element_located((By.XPATH, thex)))
     except:
         return False
 
