@@ -58,12 +58,13 @@ if exists_by_text(wd, "Sign in"):
     if DEBUG:
         chrome_options_gui.add_argument("user-data-dir=profile")
     chrome_options_gui.add_argument('--disable-infobars')
-    wd = webdriver.Chrome('chromedriver', options=chrome_options_gui)
-    wd.get("https://accounts.google.com/signin")
-    wait_for_xpath(wd, LOGIN_DETECTION_MAGIC)
+    gui_driver = webdriver.Chrome('chromedriver', options=chrome_options_gui)
+    gui_driver.get("https://accounts.google.com/signin")
+    wait_for_xpath(gui_driver, LOGIN_DETECTION_MAGIC)
     print("Login detected. Saving cookie & restarting connection.")
-    pickle.dump(wd.get_cookies(), open("gCookies.pkl", "wb"))
-    kill_driver(wd)
+    pickle.dump(gui_driver.get_cookies(), open("gCookies.pkl", "wb"))
+    kill_driver(gui_driver)
+    
     wd = webdriver.Chrome('chromedriver', options=chrome_options)
 while True:
     for colab_url in COLAB_URLS:
