@@ -1,5 +1,25 @@
 import time
 
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+
+def new_driver(headless=True, debug=False):
+    chrome_options = Options()
+   
+    chrome_options.add_argument('--no-sandbox')
+    
+    if headless:
+        chrome_options.add_argument('--disable-dev-shm-usage')
+        chrome_options.add_argument('--headless')
+    else:
+        chrome_options.add_argument('--disable-infobars')
+
+    if debug:
+        chrome_options.add_argument("user-data-dir=profile")
+    
+    wd = webdriver.Chrome('chromedriver', options=chrome_options)
+    return wd
+
 def wait_for_xpath(driver, x):
     while True:
         try:
@@ -47,4 +67,3 @@ def new_tab(driver, url, tab_index):
 def kill_driver(driver):
     driver.close()
     driver.quit()
-
