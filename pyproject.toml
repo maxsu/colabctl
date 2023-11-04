@@ -1,17 +1,31 @@
-[tool.poetry]
+[build-system]
+requires = ["setuptools", "wheel"] 
+
+[[project.authors]]
+name = "Tensor Tom"
+email = "14287229+TensorTom@users.noreply.github.com"
+
+[project.license]
+text = "MIT"
+
+[project]
 name = "colabctl"
 version = "0.2.1"
 description = "Google Colaboratory background/task executioner & controller."
-authors = ["TensorTom <14287229+TensorTom@users.noreply.github.com>"]
-license = "MIT"
+readme = "README.md"
 
-[tool.poetry.dependencies]
-python = "^3.8"
-selenium = "^3.141.0"
-validators = "^0.17.1"
+dependencies = [
+    # Web Drivers
+    "selenium >=3.141",
+    "validators >=0.17.1",
+    # QA
+    "flake8",
+    "pytest",
+]
+requires-python = ">=3.8"
 
-[tool.poetry.dev-dependencies]
+keywords = []
+classifiers = []
 
-[build-system]
-requires = ["poetry>=0.12"]
-build-backend = "poetry.masonry.api"
+[project.urls]
+Homepage = "https://github.com/bitnom/colabctl"
